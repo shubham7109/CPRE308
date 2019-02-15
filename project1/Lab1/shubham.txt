@@ -1,0 +1,3 @@
+Hello Iowa!
+You ran me as:lab1
+Current working directory:/home/shubham/CPRE308/lab1

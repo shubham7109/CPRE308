@@ -1,0 +1,6 @@
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+0 S 354934 6207  6202  0  80   0 - 31790 do_wai pts/0    00:00:00 bash
+0 S 354934 6982  6207  0  80   0 -  1053 hrtime pts/0    00:00:00 output1
+0 S 354934 6991  6207  0  80   0 -  1053 hrtime pts/0    00:00:00 output2
+0 R 354934 7019  6207  0  80   0 - 38300 -      pts/0    00:00:00 ps
+0 S 354934 7020  6207  0  80   0 - 27576 pipe_w pts/0    00:00:00 less
