@@ -21,7 +21,7 @@ void printSET();
 void printGET();
 
 int main(int argc, char** argv) {
-	// Test commit
+	
 	while(strcmp(command,"exit") != 0)
 	{
 		printUserName(argv);
@@ -34,36 +34,36 @@ int main(int argc, char** argv) {
 void executeCommand(){
 	fgets(wholeCommand, MAX_NAME_LENGTH, stdin);
 	char command = strtok(0,   " ");
-	if (strcmp(command, "pid") == 0) 
+	if (strcmp(command, "pid") == 0)
 	{
 		printPID();
-	} 
-	
-	else if (strcmp(command, "ppid") == 0) 
+	}
+
+	else if (strcmp(command, "ppid") == 0)
 	{
 		printPPID();
-	} 
-	
-	else if (strcmp(command, "pwd") == 0) 
+	}
+
+	else if (strcmp(command, "pwd") == 0)
 	{
 		printPWD();
-	} 
-	
-	else if (strcmp(command, "cd") == 0) 
+	}
+
+	else if (strcmp(command, "cd") == 0)
 	{
 		printCD();
-	} 
-	
-	else if (strcmp(command, "set") == 0) 
+	}
+
+	else if (strcmp(command, "set") == 0)
 	{
 		printSET();
-	} 
-	
-	else if (strcmp(command, "get") == 0) 
+	}
+
+	else if (strcmp(command, "get") == 0)
 	{
 		printGET();
-	} 
-	
+	}
+
 	else
 	{
 		system(command);
@@ -73,7 +73,7 @@ void executeCommand(){
 
 void printCD(){
 	chdir(getenv("HOME"));
-	
+
 }
 
 void printSET(){
@@ -102,16 +102,15 @@ void printUserName(char **argv){
 	strcpy(userName, "308sh> ");
 	if(strcmp(argv[1], "-p") == 0){
 		strcpy(userName, argv[2]);
-		
+
 	}
-	
+
 	for(i = 0; i <= strlen(userName); i++)
   	{
-  		if(userName[i] == '\"')  
+  		if(userName[i] == '\"')
 		{
   			userName[i] = '\0';
  		}
 	}
-	printf("%s",userName);	
+	printf("%s",userName);
 }
-
