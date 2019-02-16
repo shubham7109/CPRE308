@@ -94,15 +94,16 @@ void printCD(){
 		{
 			arg = "..";
 		}
-		else if(strcmp(args[1], " ") == 0 ){
+		else if(strcmp(args[1], "") == 0 || strcmp(args[1], " ") == 0 ){
 			arg = getenv("HOME");
 		}
 		else {
-			getcwd(arg,sizeof(arg));
-			printf("arg: %s\n",arg);
-			strcat(arg,"/");
-			strcat(arg,args[1]);
-			printf("args[1]: %s\n",args[1]);
+			char cwd[MAX_NAME_LENGTH];
+			getcwd(cwd,sizeof(cwd));
+			strcat(cwd,"/");
+			strcat(cwd,args[1]);
+			arg = cwd;
+
 			printf("arg: %s\n",arg);
 		}
 	} else {
@@ -111,8 +112,6 @@ void printCD(){
 	if(chdir(arg)){
 		printf("Error %s : No such file or directory\n",args[1]);
 	}
-
-
 }
 
 void printSET(){
