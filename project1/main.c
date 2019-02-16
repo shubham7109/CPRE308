@@ -88,7 +88,30 @@ void buildArgs(char** list){
 }
 
 void printCD(){
-	chdir(getenv("HOME"));
+	char *arg;
+	if(args[1] != NULL){
+		if(strcmp(args[1],"..") == 0)
+		{
+			arg = "..";
+		}
+		else if(strcmp(args[1], " ") == 0 ){
+			arg = getenv("HOME");
+		}
+		else {
+			getcwd(arg,sizeof(arg));
+			printf("arg: %s\n",arg);
+			strcat(arg,"/");
+			strcat(arg,args[1]);
+			printf("args[1]: %s\n",args[1]);
+			printf("arg: %s\n",arg);
+		}
+	} else {
+		arg = getenv("HOME");
+	}
+	if(chdir(arg)){
+		printf("Error %s : No such file or directory\n",args[1]);
+	}
+
 
 }
 
@@ -116,10 +139,11 @@ void printPWD(){
 
 void printUserName(char **argv){
 	strcpy(userName, "308sh> ");
-	if(strcmp(argv[1], "-p") == 0){
-		strcpy(userName, argv[2]);
+	if(argv[1] != NULL)
+		if(strcmp(argv[1], "-p") == 0){
+			strcpy(userName, argv[2]);
 
-	}
+		}
 
 	for(i = 0; i <= strlen(userName); i++)
   	{
