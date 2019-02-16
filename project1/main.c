@@ -8,6 +8,7 @@
 
 char userName[20];
 char wholeCommand[MAX_NAME_LENGTH];
+char* args[MAX_NAME_LENGTH];
 int i;
 bool nextLine;
 
@@ -19,10 +20,12 @@ void printPWD();
 void printCD();
 void printSET();
 void printGET();
+void buildArgs(char** list);
 
 int main(int argc, char** argv) {
-	
-	while(strcmp(command,"exit") != 0)
+
+	//printf("lol\n");
+	while(1)
 	{
 		printUserName(argv);
 		executeCommand();
@@ -32,43 +35,56 @@ int main(int argc, char** argv) {
 }
 
 void executeCommand(){
-	fgets(wholeCommand, MAX_NAME_LENGTH, stdin);
-	char command = strtok(0,   " ");
-	if (strcmp(command, "pid") == 0)
+	buildArgs(args);
+
+	if (strcmp(args[0], "pid") == 0)
 	{
 		printPID();
 	}
 
-	else if (strcmp(command, "ppid") == 0)
+	else if (strcmp(args[0], "ppid") == 0)
 	{
 		printPPID();
 	}
 
-	else if (strcmp(command, "pwd") == 0)
+	else if (strcmp(args[0], "pwd") == 0)
 	{
 		printPWD();
 	}
 
-	else if (strcmp(command, "cd") == 0)
+	else if (strcmp(args[0], "cd") == 0)
 	{
 		printCD();
 	}
 
-	else if (strcmp(command, "set") == 0)
+	else if (strcmp(args[0], "set") == 0)
 	{
 		printSET();
 	}
 
-	else if (strcmp(command, "get") == 0)
+	else if (strcmp(args[0], "get") == 0)
 	{
 		printGET();
 	}
 
 	else
 	{
-		system(command);
+		system(args[0]);
 	}
+}
 
+void buildArgs(char** list){
+		fgets(wholeCommand, MAX_NAME_LENGTH , stdin);
+		char* eachCommand = strtok(wholeCommand,"\n"); // remove the dangling \n
+
+		while(*eachCommand != '\0'){
+			while(*eachCommand == ' ' || *eachCommand == '\n')
+				*eachCommand++ = '\0';
+				*list++ = eachCommand;
+				while(*eachCommand != '\0' && *eachCommand != ' ' && *eachCommand != '\n')
+					eachCommand++;
+		}
+		*list = '\0';
 }
 
 void printCD(){
