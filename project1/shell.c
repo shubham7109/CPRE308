@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <signal.h>
 
 #define MAX_NAME_LENGTH 256
 
@@ -79,7 +80,23 @@ void executeCommand(){
 
 	else
 	{
-		system(args[0]);
+		int ret = fork();
+		int status;
+		if (ret == 0) {
+			/* this is the child process */
+			printf("Child [%d]:\n", getpid());
+			execvp(args[0], args);
+			printf("Cannot exec: %s\n",args[0]);
+			kill(getpid(), SIGTERM);
+		} else{
+			/* this is the parent process */
+			wait(&status);
+			printf("Child [%d], Exiting...\n", ret);
+			printf("WEXITSTATUS(status): %d\n", WEXITSTATUS(status));
+			if (WEXITSTATUS(status)){
+				printf("ERROR: Exited with status %d,%d\n",status,WEXITSTATUS(status));
+			}  // Else the process exited normally
+		}
 	}
 }
 
@@ -93,7 +110,7 @@ void buildArgs(char** list){
 	}
 	while(*eachCommand != '\0'){
 		while(*eachCommand == ' ' || *eachCommand == '\n'){
-			*eachCommand++ = '\0';	
+			*eachCommand++ = '\0';
 		}
 			*list++ = eachCommand;
 			while(*eachCommand != '\0' && *eachCommand != ' ' && *eachCommand != '\n')
