@@ -1,15 +1,18 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <signal.h>
+#include <stdio.h>			//standart library functions
+#include <stdlib.h>			//for set&getenv
+#include <string.h>			//for string functions
+#include <unistd.h>			//for func like fork,chdir etc.
+#include <stdbool.h>		//for bool datatype
+#include <sys/types.h>	// for waitpid
+#include <sys/wait.h>		// for waitpid
 
 #define MAX_NAME_LENGTH 256
 
 char userName[20];
 char wholeCommand[MAX_NAME_LENGTH];
 char* args[MAX_NAME_LENGTH];
+int bgStatus;
+int bgPID;
 int i;
 bool nextLine;
 
@@ -22,12 +25,17 @@ void printCD();
 void printSET();
 void printGET();
 void buildArgs(char** list);
+void handleUnixCommand(bool isBackground);
+bool isBackground();
+void checkBg();
 
 int main(int argc, char** argv) {
 
 	//printf("lol\n");
 	while(1)
 	{
+		usleep(10000);
+		checkBg();
 		printUserName(argv);
 		executeCommand();
 	}
@@ -80,22 +88,55 @@ void executeCommand(){
 
 	else
 	{
-		int ret = fork();
-		int status;
-		if (ret == 0) {
-			/* this is the child process */
-			printf("Child [%d]:\n", getpid());
-			execvp(args[0], args);
-			printf("Cannot exec %s: No such file or directory\n",args[0]);
-			kill(getpid(),SIGTERM); // End the child process
+		if(args[0] != NULL
+			&& !strcmp(args[0]," ") == 0
+			&& !strcmp(args[0],"\n") == 0
+			&& !strcmp(args[0],"\0") == 0
+			&& !strcmp(args[0],"\t") == 0){
 
-		} else{
-			/* this is the parent process */
-			wait(&status);
-			printf("Child [%d], Exit %d \n", ret,status);
-			if (WEXITSTATUS(status)){
-				printf("ERROR: Exited with WEXITSTATUS: %d\n", WEXITSTATUS(status));
-			}  // Else the process exited normally
+				handleUnixCommand(isBackground());
+
+		}
+
+	}
+}
+
+void handleUnixCommand(bool isBackground){
+	int ret = fork();
+	int status;
+	if (ret == 0) {
+		/* this is the child process */
+		printf("Child [%d]: Started...\n", getpid());
+		execvp(args[0], args);
+		printf("Cannot exec %s: No such file or directory\n",args[0]);
+		exit(1); // Mannually end the child process
+
+	} else{
+		/* this is the parent process */
+		if(!isBackground){ // wait only is it's not background process.
+			waitpid(ret, &status, NULL);
+			if (status){
+				printf("ERROR [%d]: %s Exit 1\n", ret, args[0]);
+			} else printf("Child [%d], Exit %d \n", ret,status); // Else the process exited normally
+		} else {
+			bgStatus = status;
+			bgPID = ret;
+		}
+	}
+}
+
+void checkBg(){
+	int bgPID = waitpid(-1, &bgStatus, WNOHANG);
+	if(bgPID>0){
+		if(WIFEXITED(bgStatus) != 0)
+		{
+			if(bgStatus)
+				printf("ERROR: Child [%d] Exit 1 (Bg)\n",bgPID);
+			else printf("Child [%d] Exit 0 (Bg)\n",bgPID);
+		}
+		else if(WIFSIGNALED(bgStatus)!=0)
+		{
+			printf("Child [%d] Killed (Bg)\n",bgPID);
 		}
 	}
 }
@@ -139,6 +180,7 @@ void printCD(){
 	} else {
 		arg = getenv("HOME");
 	}
+	printf("%s\n", arg);
 	if(chdir(arg)){
 		printf("Error %s : No such file or directory\n",args[1]);
 	}
@@ -174,6 +216,18 @@ void printPWD(){
 	char cwd[MAX_NAME_LENGTH];
 	getcwd(cwd,sizeof(cwd));
 	printf("%s/\n",cwd);
+}
+
+bool isBackground(){
+	int i=0;
+	while(args[i] != NULL){
+		i++;
+	}
+	if(strcmp(args[i-1],"&") == 0){
+		args[i-1] = NULL;
+		return true;
+	}
+	return false;
 }
 
 void printUserName(char **argv){
