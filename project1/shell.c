@@ -6,16 +6,25 @@
 #include <sys/types.h>	// for waitpid
 #include <sys/wait.h>		// for waitpid
 
+// Max length of each string
 #define MAX_NAME_LENGTH 256
 
+// Saves the name of the user
 char userName[20];
-char wholeCommand[MAX_NAME_LENGTH];
-char* args[MAX_NAME_LENGTH];
-int bgStatus;
-int bgPID;
-int i;
-bool nextLine;
 
+// raw command entered by the user
+char wholeCommand[MAX_NAME_LENGTH];
+
+// command split into seperate args
+char* args[MAX_NAME_LENGTH];
+
+// saves the status of the bg process
+int bgStatus;
+
+// saves the pid of the bg process
+int bgPID;
+
+// List of all the user defined functions.
 void printUserName(char **argv);
 void executeCommand();
 void printPID();
@@ -28,13 +37,17 @@ void buildArgs(char** list);
 void handleUnixCommand(bool isBackground);
 bool isBackground();
 void checkBg();
+// End of list of user defined functions.
 
+/*
+ * MAIN OF PROGRAM
+ * Handles all the arguments to the given specs
+ * Will return 0 when 'exit' is typed.
+ */
 int main(int argc, char** argv) {
 
-	//printf("lol\n");
 	while(1)
 	{
-		usleep(10000);
 		checkBg();
 		printUserName(argv);
 		executeCommand();
@@ -43,11 +56,21 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
+/*
+ * Ececutes given built-in-commmands
+ * and all linux commands
+ * this method is responsible for exiting the
+ * program.
+ */
 void executeCommand(){
 	buildArgs(args);
 
 	// User does not input anything
-	if(args[0] == NULL){
+	if(args[0] == NULL ||
+		strcmp(args[0]," ") == 0 ||
+		strcmp(args[0],"\n") == 0 ||
+		strcmp(args[0],"\0") == 0 ||
+		strcmp(args[0],"\t") == 0){
 		return;
 	}
 
@@ -97,7 +120,6 @@ void executeCommand(){
 				handleUnixCommand(isBackground());
 
 		}
-
 	}
 }
 
@@ -106,7 +128,11 @@ void handleUnixCommand(bool isBackground){
 	int status;
 	if (ret == 0) {
 		/* this is the child process */
-		printf("Child [%d]: Started...\n", getpid());
+		if(!isBackground)
+			printf("Child [%d]: Started...\n", getpid());
+		else
+			printf("Child [%d]: Started... (Bg)\n", getpid());
+
 		execvp(args[0], args);
 		printf("Cannot exec %s: No such file or directory\n",args[0]);
 		exit(1); // Mannually end the child process
@@ -126,17 +152,18 @@ void handleUnixCommand(bool isBackground){
 }
 
 void checkBg(){
+	usleep(100000);
 	int bgPID = waitpid(-1, &bgStatus, WNOHANG);
 	if(bgPID>0){
 		if(WIFEXITED(bgStatus) != 0)
 		{
 			if(bgStatus)
 				printf("ERROR: Child [%d] Exit 1 (Bg)\n",bgPID);
-			else printf("Child [%d] Exit 0 (Bg)\n",bgPID);
+			else printf("Child [%d], Exit 0 (Bg)\n",bgPID);
 		}
 		else if(WIFSIGNALED(bgStatus)!=0)
 		{
-			printf("Child [%d] Killed (Bg)\n",bgPID);
+			printf("Child [%d], Killed (Bg)\n",bgPID);
 		}
 	}
 }
@@ -238,6 +265,7 @@ void printUserName(char **argv){
 
 		}
 
+	int i=0;
 	for(i = 0; i <= strlen(userName); i++)
   	{
   		if(userName[i] == '\"')
