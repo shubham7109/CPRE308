@@ -147,11 +147,21 @@ void printCD(){
 }
 
 void printSET(){
-	printf("PID: %d\n",getpid());
+	if(args[1] != NULL && args[2] != NULL){
+		setenv(args[1],args[2],1);
+	} else if(args[1] != NULL && args[2] == NULL){
+		unsetenv(args[1]);
+	}
+	else
+		printf("Error: Missing <var> tag\n");
 }
 
 void printGET(){
-	printf("PID: %d\n",getpid());
+	if(args[1] != NULL)
+		printf("Value of %s: %s\n",args[1], getenv(args[1]));
+	else
+		printf("Error: Missing <var> tag\n");
+
 }
 
 void printPID(){
