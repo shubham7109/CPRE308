@@ -86,15 +86,15 @@ void executeCommand(){
 			/* this is the child process */
 			printf("Child [%d]:\n", getpid());
 			execvp(args[0], args);
-			printf("Cannot exec: %s\n",args[0]);
-			kill(getpid(), SIGTERM);
+			printf("Cannot exec %s: No such file or directory\n",args[0]);
+			kill(getpid(),SIGTERM); // End the child process
+
 		} else{
 			/* this is the parent process */
 			wait(&status);
-			printf("Child [%d], Exiting...\n", ret);
-			printf("WEXITSTATUS(status): %d\n", WEXITSTATUS(status));
+			printf("Child [%d], Exit %d \n", ret,status);
 			if (WEXITSTATUS(status)){
-				printf("ERROR: Exited with status %d,%d\n",status,WEXITSTATUS(status));
+				printf("ERROR: Exited with WEXITSTATUS: %d\n", WEXITSTATUS(status));
 			}  // Else the process exited normally
 		}
 	}
@@ -135,8 +135,6 @@ void printCD(){
 			strcat(cwd,"/");
 			strcat(cwd,args[1]);
 			arg = cwd;
-
-			printf("arg: %s\n",arg);
 		}
 	} else {
 		arg = getenv("HOME");
@@ -175,7 +173,7 @@ void printPPID(){
 void printPWD(){
 	char cwd[MAX_NAME_LENGTH];
 	getcwd(cwd,sizeof(cwd));
-	printf("%s\n",cwd);
+	printf("%s/\n",cwd);
 }
 
 void printUserName(char **argv){
