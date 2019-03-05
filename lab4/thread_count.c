@@ -3,11 +3,17 @@
 #include <pthread.h>
 #include <errno.h>
 
+pthread_mutex_t lock;
+
 void *threadCounter(void *param){
   int *args = (int *)param;
   int i;
   for(i = 0; i < 1000000; i++){
+    pthread_mutex_lock(&lock);
+    //Start of critcial section
     (*args)++;
+    //End of cricial section
+    pthread_mutex_unlock(&lock);
   }
 }
 int main(int argc, char** argv){
@@ -15,6 +21,13 @@ int main(int argc, char** argv){
   pthread_t t2;
   int shared = 0;
   int err;
+
+  err = pthread_mutex_init(&lock, NULL);
+  if(err != 0){
+    printf("Error initializing the mutex.\n");
+    exit(1);
+  }
+
   err = pthread_create(&t1, NULL, threadCounter, (void *)&shared);
     if(err != 0){
     errno = err;
@@ -39,6 +52,14 @@ int main(int argc, char** argv){
     perror("pthread_join");
     exit(1);
   }
+
+  err = pthread_mutex_destroy(&lock);
+  if(err != 0){
+    printf("Error destroying the mutex.\n");
+    exit(1);
+  }
+
+
   printf("After both threads are done executing, `shared` = %d\n", shared);
   return 0;
 }
