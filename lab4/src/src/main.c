@@ -7,7 +7,7 @@
  * @brief     Emulate a print server system
  * @copyright MIT License (c) 2015, 2016
  */
- 
+
 /*
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -93,13 +93,13 @@ void *printer_thread(void* param)
 	struct printer * this = param;
 	struct print_job * job;
 	struct print_job * prev;
-	
+
 	printf("I am a thread\n");
 	//return NULL;
 	while(1)
 	{
 #warning The student should implement the consumer thread
-// In this loop the thread should wait for the producer to add something to the 
+// In this loop the thread should wait for the producer to add something to the
 // this->job_queue list.  It should then in a thread safe way pull that job
 // out of the queue
 	}
@@ -114,7 +114,7 @@ void * producer_thread(void * param)
 	char * line = NULL;
 	size_t n = 0;
 	long long job_number = 0;
-	
+
 	while(getline(&line, &n, stdin) > 0)
 	{
 		if(strncmp(line, "NEW", 3) == 0)
@@ -143,7 +143,7 @@ void * producer_thread(void * param)
 		else if(job && strncmp(line, "PRINTER", 7) == 0)
 		{
 			strtok(line, ": ");
-			job->group_name = malloc(n);	
+			job->group_name = malloc(n);
 			strncpy(job->group_name, strtok(NULL, "\n"), n);
 		}
 		else if(job && strncmp(line, "PRINT", 5) == 0)
@@ -207,7 +207,7 @@ int main(int argc, char* argv[])
 	{
 		sem_init(&g->job_queue.num_jobs, 0, 0);
 		pthread_mutex_init(&g->job_queue.lock, NULL);
-		
+
 		// for each printer in the group
 		for(p = g->printer_queue; p; p = p->next)
 		{
@@ -215,8 +215,8 @@ int main(int argc, char* argv[])
 			pthread_create(&p->tid, NULL, printer_thread, (void*)p);
 		}
 	}
-	
-	
+
+
 	//-- Create the prducer thread
 	pthread_t producer_tid;
 	pthread_create(&producer_tid, NULL, producer_thread, NULL);
@@ -229,7 +229,7 @@ int main(int argc, char* argv[])
 
 /**
  * Parse the command line arguments and set the appropriate flags and variables
- * 
+ *
  * Recognized arguments:
  *   - `-v`: Turn on Verbose mode
  *   - `-?`: Print help information
@@ -310,7 +310,7 @@ static void parse_rc_file(FILE* fp)
 	}
 
 	// print out the printer groups
-	dprintf("\n--- Printers ---\n"); 
+	dprintf("\n--- Printers ---\n");
 	for(g = printer_group_head; g; g = g->next_group)
 	{
 		dprintf("Printer Group %s\n", g->name);
@@ -322,4 +322,3 @@ static void parse_rc_file(FILE* fp)
 	dprintf("----------------\n\n");
 
 }
-
