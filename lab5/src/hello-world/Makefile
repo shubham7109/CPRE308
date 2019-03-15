@@ -1,6 +1,6 @@
 obj-m += hello_world.o
 
-LINUX_SRC = 
+LINUX_SRC = /tmp/shubham/linux-4.10.1/
 
 all:
 	make -C $(LINUX_SRC) M=$(PWD) modules
