@@ -5,7 +5,7 @@
  * @brief     Shared memory space example
  * @copyright MIT License (c) 2015
  */
- 
+
 /*
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -56,17 +56,8 @@ int main(int argc, char** argv)
 	printf("a_string = \"%s\"\n", shared_mem->a_string);
 	printf("an_array[] = {%d, %d, %d, %d, %d}\n", shared_mem->an_array[0], shared_mem->an_array[1], shared_mem->an_array[2], shared_mem->an_array[3], shared_mem->an_array[4]);
 	fflush(stdout);
-	
-	shared_mem = allocSharedMem(sizeof(*shared_mem));
-	shared_mem->a_ptr = allocSharedMem(52);
-
 	if(shared_mem->a_ptr > 0)
 	{
-		printf("here\n");
-		printf("a_ptr = %lu\n", shared_mem->a_ptr, shared_mem->a_ptr);
-		printf("here\n");
-		printf("a_ptr =%s \n", shared_mem->a_ptr, shared_mem->a_ptr);
-		printf("here\n");
 		printf("a_ptr = %lu = \"%s\"\n", shared_mem->a_ptr, shared_mem->a_ptr);
 	}
 	else
@@ -74,4 +65,3 @@ int main(int argc, char** argv)
 		printf("a_ptr = NULL\n");
 	}
 }
-

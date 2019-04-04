@@ -5,7 +5,7 @@
  * @brief     Shared memory space example
  * @copyright MIT License (c) 2015
  */
- 
+
 /*
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -23,8 +23,7 @@ struct SHM_SHARED_MEMORY
 {
 	char a_string[100];
 	int an_array[5];
-	char* a_ptr;
+	const char* a_ptr;
 };
 
 #endif
-
