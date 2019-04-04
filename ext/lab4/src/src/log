@@ -1,0 +1,28 @@
+Consumer thread has spawned!
+Consumer waiting for event signal!
+Consumer thread has spawned!
+Consumer waiting for event signal!
+Started producer!
+Producer read NEW!
+Producer read NAME!
+Producer read FILE!
+Producer read DESCRIPTION!
+Producer read PRINTER!
+Producer read PRINT!
+Producer group found, locking mutex!
+Producer locked mutex!
+Producer unlocked semaphore!
+Producer unlocked mutex!
+Broadcast for consumption!
+Consumer got signalled!
+Consumer popping from queue!
+Producer looped over extra printer group name given: black_white
+Consumer error in printing job to driver!
+Consumed: output1.pdf
+Consumer unlocked semaphore!
+Consumer unlocked mutex!
+Consumer waiting for event signal!
+Found EXIT directive! Producer going down!
+Waiting on all consumers to exit…
+EXIT directive found! Consumer going down!
+EXIT directive found! Consumer going down!
