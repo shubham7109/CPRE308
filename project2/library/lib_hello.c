@@ -5,7 +5,7 @@
  * @brief     Library example source
  * @copyright MIT License (c) 2015
  */
- 
+
 /*
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -34,6 +34,5 @@ int print_world(int num)
 	{
 		printf("World\n");
 	}
-	return 101;
+	return 42;
 }
-

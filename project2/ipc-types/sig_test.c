@@ -5,7 +5,7 @@
  * @brief     Signal example
  * @copyright MIT License (c) 2015
  */
- 
+
 /*
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -38,6 +38,3 @@ int main(int argc, char** argv)
 	}
 	return 0;
 }
-
-
-
