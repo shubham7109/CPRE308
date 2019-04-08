@@ -55,8 +55,8 @@ int main(int argc, char** argv)
 	{
 		shared_mem->an_array[i] = i*i;
 	}
-	char my_string[] = "I am a string allocated on main's stack!";
-	shared_mem->a_ptr = my_string;
+	
+	shared_mem->a_ptr = "I am a string allocated on main's stack!";
 	sleep(5);
 	printf("a_string = \"%s\"\n", shared_mem->a_string);
 
@@ -65,7 +65,7 @@ int main(int argc, char** argv)
 	printf("an_array[] = {%d, %d, %d, %d, %d}\n", shared_mem->an_array[0], shared_mem->an_array[1], shared_mem->an_array[2], shared_mem->an_array[3], shared_mem->an_array[4]);
 	if(shared_mem->a_ptr > 0)
 	{
-		printf("a_ptr = %lu = \"%s\"\n", shared_mem->a_ptr, shared_mem->a_ptr);
+		printf("a_ptr = %lu\n", shared_mem->a_ptr);
 	}
 	else
 	{
