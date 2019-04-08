@@ -1,5 +1,5 @@
 EXE=main
-SRC=main_single_sol.c printer_driver.c
+SRC=print_server_single.c printer_driver.c
 CFLAGS=-D_GNU_SOURCE
 LFLAGS=-pthread
 DEBUG=-g -Wall
@@ -15,11 +15,11 @@ $(EXE): $(OBJ)
 %.o: %.c *.h
 	gcc -c $< $(CFLAGS) $(DEBUG)
 
-doc: 
+doc:
 	doxygen
 
 clean:
 	rm -rf *.o
 	rm -rf $(EXE)
-	
+
 .PHONY: doc
