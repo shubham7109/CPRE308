@@ -51,6 +51,8 @@ int main(int argc, char** argv)
 		return -1;
 	}
 	strcpy(shared_mem->a_string, "I am a buffer in the shared memory area");
+	strcpy(shared_mem->a_desc, "Operating system concepts, processes, threads, synchronization between threads, process and thread scheduling, deadlocks, memory management, file systems, I/O systems,security, Linux-based lab experiments." );
+
 	shared_mem->an_array[0] = 42;
 	sleep(5);
 	printf("a_string = \"%s\"\n", shared_mem->a_string);

@@ -59,6 +59,9 @@ int main(int argc, char** argv)
 	shared_mem->a_ptr = my_string;
 	sleep(5);
 	printf("a_string = \"%s\"\n", shared_mem->a_string);
+
+	printf("The couse description is:\n%s\n",shared_mem->a_desc);
+
 	printf("an_array[] = {%d, %d, %d, %d, %d}\n", shared_mem->an_array[0], shared_mem->an_array[1], shared_mem->an_array[2], shared_mem->an_array[3], shared_mem->an_array[4]);
 	if(shared_mem->a_ptr > 0)
 	{

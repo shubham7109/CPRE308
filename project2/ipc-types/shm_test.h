@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 struct SHM_SHARED_MEMORY
 {
 	char a_string[100];
+	char a_desc[1000];
 	int an_array[5];
 	const char* a_ptr;
 };
