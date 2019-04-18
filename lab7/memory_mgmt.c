@@ -46,6 +46,8 @@ int PRAlgo_LRU(const PageFrame * PageFrames, int num_frames, const int * PageAcc
 int PRAlgo_OPT(const PageFrame * PageFrames, int num_frames, const int * PageAccesses, int num_accesses, int current_access);
 int PRAlgo_CUST(const PageFrame * PageFrames, int num_frames, const int * PageAccesses, int num_accesses, int current_access);
 
+int findID_OPT(const PageFrame* PageFrames, int frame_ID, const int* PageAccesses, int num_accesses);
+
 
 /* Initialize the page frames, set all values to -1 */
 void initialize_page_frames(PageFrame * PageFrames, int size)
@@ -182,6 +184,7 @@ int handle_page_accesses(PageFrame * PageFrames, int num_frames, int * PageAcces
 
 int main ()
 {
+	srand(time(NULL));   // Initialization, should only be called once.
     int PageAccesses[NUM_ACCESSES];    /* Array to store the page accesses */
     PageFrame PageFrames[NUM_FRAMES];    /* Array representing the page frame */
     PageFaultTotal PageFaultTotals;	/* Track page fault totals across runs */
@@ -201,7 +204,7 @@ int main ()
 
     int i;
     for(i = 0; i < NUM_RUNS; i++) {
-		printf("Run: %d\n", i+1);
+		//printf("Run: %d\n", i+1);
 		/* Memory access analysis with random access */
 		initialize_page_frames(PageFrames, NUM_FRAMES);
 		build_random_access_seq(PageAccesses, NUM_ACCESSES);
@@ -254,13 +257,13 @@ int main ()
 
 	printf("The average number of page faults for FIFO with Sequential Access is %d.\n", PageFaultTotals.page_faults_FIFO_seq / NUM_RUNS);
 	printf("The average number of page faults for LRU with Sequential Access is %d.\n",PageFaultTotals.page_faults_LRU_seq / NUM_RUNS);
-	//printf("The average number of page faults for OPT with Sequential Access is %d.\n",PageFaultTotals.page_faults_OPT_seq / NUM_RUNS);
+	printf("The average number of page faults for OPT with Sequential Access is %d.\n",PageFaultTotals.page_faults_OPT_seq / NUM_RUNS);
 	//printf("The average number of page faults for CUST with Sequential Access is %d.\n",PageFaultTotals.page_faults_CUST_seq / NUM_RUNS);
 
 	printf("The average number of page faults for FIFO with LR Workload Access is %d.\n", PageFaultTotals.page_faults_FIFO_lr / NUM_RUNS);
 	printf("The average number of page faults for LRU with LR Workload Access is %d.\n",PageFaultTotals.page_faults_LRU_lr / NUM_RUNS);
-	//printf("The average number of page faults for OPT with LR Workload Access is %d.\n",PageFaultTotals.page_faults_OPT_lr / NUM_RUNS);
-	//printf("The average number of page faults for CUST with LR Workload Access is %d.\n",PageFaultTotals.page_faults_CUST_lr / NUM_RUNS);
+	printf("The average number of page faults for OPT with LR Workload Access is %d.\n",PageFaultTotals.page_faults_OPT_lr / NUM_RUNS);
+	printf("The average number of page faults for CUST with LR Workload Access is %d.\n",PageFaultTotals.page_faults_CUST_lr / NUM_RUNS);
 
     return 0;
 }
@@ -318,46 +321,47 @@ int opt = 0;
 int PRAlgo_OPT(const PageFrame * PageFrames, int num_frames, const int * PageAccesses, int num_accesses, int current_access) {
 
 	int least_time_of_access = PageFrames[0].time_of_access;
-	int index_LRU = 0;
+	int index_OPT = 0;
 	int i,j;
 
 	int furthest_index = 0;
-	bool reachedID = false;
-
-	//printf("OPT: %d\n", opt++);
-
 	
 	for (i = 0; i < num_frames; i++)
 	{
-		for (j = 0; j < num_accesses; j++) {
-			if (PageAccesses[j] == PageFrames[i].page_id && furthest_index < j && !reachedID) {
-				reachedID = true;
-			}
+		int ret = findID_OPT(PageFrames, i, PageAccesses, current_access);
+		if (ret > furthest_index) {
+			furthest_index = ret;
+			index_OPT = i;
 		}
-		reachedID = false;
 	}
-	
-	
 
-	return index_LRU;
+	
+	return index_OPT;
 
 }
+
+int findID_OPT(const PageFrame* PageFrames, int frame_ID, const int* PageAccesses, int current_access) {
+	
+	int j;
+
+	for (j = 0; j < current_access; j++) {
+		if (PageAccesses[j] == PageFrames[frame_ID].page_id ) {
+			return j;
+		}
+	}
+	printf("Returning last: %d\n", j);
+	return j;
+
+}
+
+
 int PRAlgo_CUST(const PageFrame * PageFrames, int num_frames, const int * PageAccesses, int num_accesses, int current_access) {
+	
+	int index_CUST = 0;
 
-    int least_time_of_arrival = PageFrames[0].time_of_arrival;
-    int index_with_least_arrival_time = 0;
-    int i;
+	int r = rand() % 9;
 
 
-    for(i = 1; i < num_frames; i++)
-    {
-        if(PageFrames[i].time_of_arrival < least_time_of_arrival)
-        {
-            least_time_of_arrival = PageFrames[i].time_of_arrival;
-            index_with_least_arrival_time = i;
-        }
-    }
-
-    return index_with_least_arrival_time;
+    return index_CUST;
 
 }
