@@ -7,6 +7,9 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+
 
 #define SIZE 32  /* size of the read buffer */
 //define PRINT_HEX // un-comment this to print the values in hex for debugging
@@ -77,27 +80,57 @@ int main(int argc, char * argv[])
 // Converts two characters to an unsigned short with two, one
 unsigned short endianSwap(unsigned char one, unsigned char two)
 {
-    // This is stub code!
-	return 0x0000;
+	return ((one << 8) & 0xFF00) | (two & 0xFF);
 }
-
-
 // Fills out the BootSector Struct from the buffer
 void decodeBootSector(struct BootSector * pBootS, unsigned char buffer[])
 {
 	int i = 3;  // Skip the first 3 bytes
-    
 	// Pull the name and put it in the struct (remember to null-terminate)
+
+	/*
+	0x0003 0x6d   m
+	0x0004 0x6b   k
+	0x0005 0x64   d
+	0x0006 0x6f   o
+	0x0007 0x73   s
+	0x0008 0x66   f
+	0x0009 0x73   s
+*/
+	char sName[7] = "";
+	//int j =0;
+	for(i=3; i < 7 + 3; i++){
+		sName[i-3] = buffer[i];
+	}
+	strcpy(pBootS->sName, sName);
     
 	// Read bytes/sector and convert to big endian
+	int iBytesSector = endianSwap(buffer[0x0C], buffer[0x0B]);
+	pBootS->iBytesSector = iBytesSector;
     
 	// Read sectors/cluster, Reserved sectors and Number of Fats
+	pBootS->iSectorsCluster = buffer[0x0D];
+	
+	pBootS->iReservedSectors = endianSwap(buffer[0x0F], buffer[0x0E]);
+
+	pBootS->iNumberFATs = buffer[0x10];
     
 	// Read root entries, logicical sectors and medium descriptor
+	pBootS->iRootEntries = endianSwap(buffer[0x12], buffer[0x11]);
+
+	pBootS->iLogicalSectors = endianSwap(buffer[0x14], buffer[0x13]);
+
+	pBootS->xMediumDescriptor = buffer[0x15];
     
 	// Read and covert sectors/fat, sectors/track, and number of heads
+	pBootS->iSectorsFAT = endianSwap(buffer[0x17], buffer[0x16]);
+
+	pBootS->iSectorsTrack = endianSwap(buffer[0x19], buffer[0x18]);
+
+	pBootS->iHeads = endianSwap(buffer[0x1B], buffer[0x1A]);
     
 	// Read hidden sectors
+	pBootS->iHiddenSectors = endianSwap(buffer[0x1D], buffer[0x1C]);
     
 	return;
 }
